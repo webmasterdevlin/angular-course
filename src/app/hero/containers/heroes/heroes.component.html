@@ -1,0 +1,54 @@
+<div *ngIf="editingTracker === '0'">
+  <app-form
+    [itemForm]="itemForm"
+    [text]="'SAVE'"
+    (handleSubmit)="onSave()"
+  ></app-form>
+</div>
+
+<section *ngIf="!isLoading; else loading">
+  <ul *ngFor="let hero of heroes">
+    <li style="margin-right: 1rem">
+      <div *ngIf="editingTracker === hero.id">
+        <app-form
+          [itemForm]="editedForm"
+          [text]="'UPDATE'"
+          (handleSubmit)="onUpdate()"
+        ></app-form>
+      </div>
+      <div *ngIf="editingTracker !== hero.id">
+        <span
+          >{{ hero.firstName }} {{ hero.lastName }} is {{ hero.knownAs }}</span
+        >
+      </div>
+      <div>
+        <button
+          *ngIf="editingTracker === hero.id"
+          (click)="editingTracker = '0'"
+          style="background-color: lightcyan"
+        >
+          CANCEL
+        </button>
+
+        <button
+          *ngIf="editingTracker !== hero.id"
+          (click)="editingTracker = hero.id; editedForm.patchValue(hero)"
+          style="background-color: lightcyan"
+        >
+          EDIT
+        </button>
+        <button (click)="goToHeroDetail(hero.id)">DETAIL</button>
+        <button
+          (click)="removeHero(hero.id)"
+          style="background-color: deeppink"
+        >
+          DELETE
+        </button>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<ng-template #loading>
+  <span>loading..</span>
+</ng-template>

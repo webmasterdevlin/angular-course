@@ -1,0 +1,9 @@
+<form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+  <input type="text" placeholder="First Name" formControlName="firstName" />
+  <input type="text" placeholder="Last Name" formControlName="lastName" />
+  <input type="text" placeholder="House" formControlName="house" />
+  <input type="text" placeholder="Known As" formControlName="knownAs" />
+  <button type="submit" style="background-color: greenyellow">
+    {{ text }}
+  </button>
+</form>
