@@ -6,9 +6,9 @@
   ></app-form>
 </div>
 
-<section *ngIf="!isLoading; else loading">
-  <ul *ngFor="let hero of heroes">
-    <li style="margin-right: 1rem">
+<section *ngIf="!isLoading; else loading" class="mx-auto">
+  <div class="card my-4" style="width: 100%" *ngFor="let hero of heroes">
+    <div class="card-body">
       <div *ngIf="editingTracker === hero.id">
         <app-form
           [itemForm]="editedForm"
@@ -16,16 +16,17 @@
           (handleSubmit)="onUpdate()"
         ></app-form>
       </div>
-      <div *ngIf="editingTracker !== hero.id">
-        <span
-          >{{ hero.firstName }} {{ hero.lastName }} is {{ hero.knownAs }}</span
-        >
+      <div *ngIf="editingTracker !== hero.id" class="mb-3">
+        <h5 class="card-title">
+          {{ hero.firstName }} {{ hero.lastName }} is {{ hero.knownAs }}
+        </h5>
+        <p class="card-text">{{ hero.house }}</p>
       </div>
       <div>
         <button
           *ngIf="editingTracker === hero.id"
           (click)="editingTracker = '0'"
-          style="background-color: lightcyan"
+          class="btn btn-outline-primary mr-2"
         >
           CANCEL
         </button>
@@ -33,20 +34,19 @@
         <button
           *ngIf="editingTracker !== hero.id"
           (click)="editingTracker = hero.id; editedForm.patchValue(hero)"
-          style="background-color: lightcyan"
+          class="btn btn-primary mr-2"
         >
           EDIT
         </button>
-        <button (click)="goToHeroDetail(hero.id)">DETAIL</button>
-        <button
-          (click)="removeHero(hero.id)"
-          style="background-color: deeppink"
-        >
+        <button (click)="goToHeroDetail(hero.id)" class="btn btn-info mr-2">
+          DETAIL
+        </button>
+        <button (click)="removeHero(hero.id)" class="btn btn-danger">
           DELETE
         </button>
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </section>
 
 <ng-template #loading>
