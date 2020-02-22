@@ -12,7 +12,10 @@ import { FormComponent } from "./components/form/form.component";
     ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: "never" })],
   exports: [
     FormComponent,
-    CommonModule
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule { }
