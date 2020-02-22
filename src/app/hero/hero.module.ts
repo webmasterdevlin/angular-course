@@ -1,5 +1,4 @@
 import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
 import { HeroesComponent } from "./containers/heroes/heroes.component";
 import { HeroDetailComponent } from "./containers/hero-detail/hero-detail.component";
 import { RouterModule, Routes } from "@angular/router";
@@ -19,7 +18,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [HeroesComponent, HeroDetailComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes)],
   providers: [HeroService]
 })
-export class HeroModule {}
+export class HeroModule { }
