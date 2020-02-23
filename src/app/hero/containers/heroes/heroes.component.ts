@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { Hero } from "../../hero.model";
 import { HeroService } from "../../hero.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -54,6 +55,20 @@ export class HeroesComponent implements OnInit, OnDestroy {
     );
   }
 
+  // removeHero(id: string) {
+  //   const prevData: Hero[] = [...this.heroes];
+  //   this.heroes = this.heroes.filter(h => h.id !== id);
+  //   this.sub = this.heroService
+  //     .deleteHeroById(id + "x")
+  //     .pipe(
+  //       catchError((err: HttpErrorResponse) => {
+  //         console.log(err.statusText);
+  //         return (this.heroes = prevData);
+  //       })
+  //     )
+  //     .subscribe();
+  // }
+
   onSave() {
     this.isLoading = true;
     this.heroService.postHero(this.itemForm.value).subscribe(
@@ -70,18 +85,19 @@ export class HeroesComponent implements OnInit, OnDestroy {
   }
 
   onUpdate() {
+    const hero = this.editedForm.value;
     this.isLoading = true;
-    this.heroService.putHero(this.editedForm.value).subscribe(() => {
-      const index = this.heroes.findIndex(
-        h => h.id === this.editedForm.value.id
-      );
-      this.heroes[index] = this.editedForm.value;
-    }),
+    this.heroService.putHero(hero).subscribe(
+      () => {
+        const index = this.heroes.findIndex(h => h.id === hero.id);
+        this.heroes[index] = hero;
+      },
       (err: HttpErrorResponse) => {
         this.isLoading = false;
         console.log(err.statusText);
       },
-      () => (this.isLoading = false);
+      () => (this.isLoading = false)
+    );
   }
 
   goToHeroDetail(id: string) {
