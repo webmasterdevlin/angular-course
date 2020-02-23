@@ -3,7 +3,6 @@ import { Subscription, throwError } from "rxjs";
 import { Hero } from "../../hero.model";
 import { HeroService } from "../../hero.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { catchError } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 
@@ -45,32 +44,29 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   removeHero(id: string) {
     this.isLoading = true;
-    (this.sub = this.heroService
-      .deleteHeroById(id)
-      .subscribe(() => (this.heroes = this.heroes.filter(h => h.id !== id)))),
+    this.sub = this.heroService.deleteHeroById(id).subscribe(
+      () => (this.heroes = this.heroes.filter(h => h.id !== id)),
       (err: HttpErrorResponse) => {
         this.isLoading = false;
         console.log(err.message);
       },
-      () => (this.isLoading = false);
+      () => (this.isLoading = false)
+    );
   }
 
   onSave() {
     this.isLoading = true;
-    this.heroService
-      .postHero(this.itemForm.value)
-      .pipe()
-      .subscribe(
-        data => this.heroes.push(data),
-        (err: HttpErrorResponse) => {
-          this.isLoading = false;
-          console.log(err.message);
-        },
-        () => {
-          this.isLoading = false;
-          this.itemForm.reset();
-        }
-      );
+    this.heroService.postHero(this.itemForm.value).subscribe(
+      data => this.heroes.push(data),
+      (err: HttpErrorResponse) => {
+        this.isLoading = false;
+        console.log(err.message);
+      },
+      () => {
+        this.isLoading = false;
+        this.itemForm.reset();
+      }
+    );
   }
 
   onUpdate() {
