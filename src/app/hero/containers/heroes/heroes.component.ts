@@ -3,7 +3,7 @@ import { Subscription, throwError } from "rxjs";
 import { Hero } from "../../hero.model";
 import { HeroService } from "../../hero.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { catchError, tap } from "rxjs/operators";
+import { catchError } from "rxjs/operators";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
 
@@ -14,11 +14,11 @@ import { Router } from "@angular/router";
 })
 export class HeroesComponent implements OnInit, OnDestroy {
   heroes: Hero[];
-  isLoading: boolean = false;
+  isLoading = false;
   itemForm: FormGroup;
   editedForm: FormGroup;
   sub: Subscription;
-  editingTracker: string = "0";
+  editingTracker = "0";
 
   constructor(
     private heroService: HeroService,
@@ -29,17 +29,14 @@ export class HeroesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
     this.formBuilderInit();
-    this.sub = this.heroService
-      .getHeroes()
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          return throwError(err.message);
-        })
-      )
-      .subscribe(data => {
-        this.heroes = data;
+    this.sub = this.heroService.getHeroes().subscribe(
+      data => (this.heroes = data),
+      (err: HttpErrorResponse) => {
         this.isLoading = false;
-      });
+        console.log(err.statusText);
+      },
+      () => (this.isLoading = false)
+    );
   }
 
   ngOnDestroy(): void {
@@ -48,50 +45,47 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   removeHero(id: string) {
     this.isLoading = true;
-    this.sub = this.heroService
+    (this.sub = this.heroService
       .deleteHeroById(id)
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          return throwError(err.message);
-        })
-      )
-      .subscribe(() => {
-        this.heroes = this.heroes.filter(h => h.id !== id);
+      .subscribe(() => (this.heroes = this.heroes.filter(h => h.id !== id)))),
+      (err: HttpErrorResponse) => {
         this.isLoading = false;
-      });
+        console.log(err.message);
+      },
+      () => (this.isLoading = false);
   }
 
   onSave() {
     this.isLoading = true;
     this.heroService
       .postHero(this.itemForm.value)
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          return throwError(err.message);
-        })
-      )
-      .subscribe(data => {
-        this.heroes.push(data);
-        this.isLoading = false;
-      });
+      .pipe()
+      .subscribe(
+        data => this.heroes.push(data),
+        (err: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.log(err.message);
+        },
+        () => {
+          this.isLoading = false;
+          this.itemForm.reset();
+        }
+      );
   }
 
   onUpdate() {
     this.isLoading = true;
-    this.heroService
-      .putHero(this.editedForm.value)
-      .pipe(
-        catchError((err: HttpErrorResponse) => {
-          return throwError(err.message);
-        })
-      )
-      .subscribe(() => {
-        const index = this.heroes.findIndex(
-          h => h.id === this.editedForm.value.id
-        );
-        this.heroes[index] = this.editedForm.value;
+    this.heroService.putHero(this.editedForm.value).subscribe(() => {
+      const index = this.heroes.findIndex(
+        h => h.id === this.editedForm.value.id
+      );
+      this.heroes[index] = this.editedForm.value;
+    }),
+      (err: HttpErrorResponse) => {
         this.isLoading = false;
-      });
+        console.log(err.statusText);
+      },
+      () => (this.isLoading = false);
   }
 
   goToHeroDetail(id: string) {
@@ -100,16 +94,16 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   private formBuilderInit(): void {
     this.itemForm = this.fb.group({
-      firstName: ["", Validators.required],
-      lastName: ["", Validators.required],
+      firstName: ["", [Validators.required, Validators.minLength(4)]],
+      lastName: ["", [Validators.required, Validators.minLength(4)]],
       house: [""],
       knownAs: [""]
     });
 
     this.editedForm = this.fb.group({
       id: [""],
-      firstName: ["", Validators.required],
-      lastName: ["", Validators.required],
+      firstName: ["", [Validators.required, Validators.minLength(4)]],
+      lastName: ["", [Validators.required, Validators.minLength(4)]],
       house: [""],
       knownAs: [""]
     });
