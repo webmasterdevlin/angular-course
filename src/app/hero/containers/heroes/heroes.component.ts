@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Subscription, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { Subscription } from "rxjs";
 import { Hero } from "../../hero.model";
-import { HeroService } from "../../hero.service";
+
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { HttpClientRxJSService } from "../../../core/services/httpClientRxJS.service";
 
 @Component({
   selector: "app-heroes",
@@ -21,7 +21,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   editingTracker = "0";
 
   constructor(
-    private heroService: HeroService,
+    private heroService: HttpClientRxJSService,
     private fb: FormBuilder,
     private router: Router
   ) {}

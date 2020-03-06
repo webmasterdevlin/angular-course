@@ -3,7 +3,6 @@ import { HeroesComponent } from "./containers/heroes/heroes.component";
 import { HeroDetailComponent } from "./containers/hero-detail/hero-detail.component";
 import { RouterModule, Routes } from "@angular/router";
 import { SharedModule } from "../shared/shared.module";
-import { HeroService } from "./hero.service";
 
 const routes: Routes = [
   {
@@ -19,6 +18,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [HeroesComponent, HeroDetailComponent],
   imports: [SharedModule, RouterModule.forChild(routes)],
-  providers: [HeroService]
+  providers: []
 })
-export class HeroModule { }
+export class HeroModule {}

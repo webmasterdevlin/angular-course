@@ -1,21 +1,15 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
 import { FormComponent } from "./components/form/form.component";
 
 @NgModule({
   declarations: [FormComponent],
-  imports: [CommonModule,
-    FormsModule,
-    HttpClientModule,
-    ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: "never" })],
-  exports: [
-    FormComponent,
+  imports: [
     CommonModule,
     FormsModule,
-    HttpClientModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: "never" })
+  ],
+  exports: [FormComponent, CommonModule, FormsModule, ReactiveFormsModule]
 })
-export class SharedModule { }
+export class SharedModule {}
