@@ -27,7 +27,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.isLoading = true;
+    this.formBuilderInit();
     this.fetchHeroes();
   }
 
