@@ -21,7 +21,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   editingTracker = "0";
 
   constructor(
-    private heroService: HttpClientRxJSService,
+    private dataService: HttpClientRxJSService,
     private fb: FormBuilder,
     private router: Router
   ) {}
@@ -29,7 +29,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isLoading = true;
     this.formBuilderInit();
-    this.sub = this.heroService.getHeroes().subscribe(
+    this.sub = this.dataService.getHeroes().subscribe(
       data => (this.heroes = data),
       (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -45,7 +45,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   removeHero(id: string) {
     this.isLoading = true;
-    this.sub = this.heroService.deleteHeroById(id).subscribe(
+    this.sub = this.dataService.deleteHeroById(id).subscribe(
       () => (this.heroes = this.heroes.filter(h => h.id !== id)),
       (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -58,7 +58,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   // removeHero(id: string) {
   //   const prevData: Hero[] = [...this.heroes];
   //   this.heroes = this.heroes.filter(h => h.id !== id);
-  //   this.sub = this.heroService
+  //   this.sub = this.dataService
   //     .deleteHeroById(id + "x")
   //     .pipe(
   //       catchError((err: HttpErrorResponse) => {
@@ -71,7 +71,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   onSave() {
     this.isLoading = true;
-    this.heroService.postHero(this.itemForm.value).subscribe(
+    this.dataService.postHero(this.itemForm.value).subscribe(
       data => this.heroes.push(data),
       (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -87,7 +87,7 @@ export class HeroesComponent implements OnInit, OnDestroy {
   onUpdate() {
     const hero = this.editedForm.value;
     this.isLoading = true;
-    this.heroService.putHero(hero).subscribe(
+    this.dataService.putHero(hero).subscribe(
       () => {
         const index = this.heroes.findIndex(h => h.id === hero.id);
         this.heroes[index] = hero;

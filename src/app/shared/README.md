@@ -1,1 +1,1 @@
-#### CoreModule should contain your singleton services, single-instance components, and export any third-party modules needed in AppModule
+#### SharedModule should contain common components/pipes/directives and also export commonly used Angular modules (like CommonModule from @angular/common for \*ngIf directive). Place for presentational components or also known as dumb components.
