@@ -28,7 +28,15 @@ export class HeroesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.formBuilderInit();
+    this.fetchHeroes();
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  fetchHeroes() {
+    this.isLoading = true;
     this.sub = this.dataService.getHeroes().subscribe(
       data => (this.heroes = data),
       (err: HttpErrorResponse) => {
@@ -37,10 +45,6 @@ export class HeroesComponent implements OnInit, OnDestroy {
       },
       () => (this.isLoading = false)
     );
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 
   removeHero(id: string) {
