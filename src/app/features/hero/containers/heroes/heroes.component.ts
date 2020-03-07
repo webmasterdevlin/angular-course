@@ -17,8 +17,9 @@ export class HeroesComponent implements OnInit, OnDestroy {
   isLoading = false;
   itemForm: FormGroup;
   editedForm: FormGroup;
-  sub: Subscription;
   editingTracker = "0";
+
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private dataService: HttpClientRxJSService,
@@ -32,37 +33,44 @@ export class HeroesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.subscriptions.forEach(sub => {
+      console.log(sub);
+      sub.unsubscribe();
+    });
   }
 
   fetchHeroes() {
     this.isLoading = true;
-    this.sub = this.dataService.getHeroes().subscribe(
-      data => (this.heroes = data),
-      (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        console.log(err.statusText);
-      },
-      () => (this.isLoading = false)
+    this.subscriptions.push(
+      this.dataService.getHeroes().subscribe(
+        data => (this.heroes = data),
+        (err: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.log(err.statusText);
+        },
+        () => (this.isLoading = false)
+      )
     );
   }
 
   removeHero(id: string) {
     this.isLoading = true;
-    this.sub = this.dataService.deleteHeroById(id).subscribe(
-      () => (this.heroes = this.heroes.filter(h => h.id !== id)),
-      (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        console.log(err.message);
-      },
-      () => (this.isLoading = false)
+    this.subscriptions.push(
+      this.dataService.deleteHeroById(id).subscribe(
+        () => (this.heroes = this.heroes.filter(h => h.id !== id)),
+        (err: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.log(err.message);
+        },
+        () => (this.isLoading = false)
+      )
     );
   }
 
   // removeHero(id: string) {
   //   const prevData: Hero[] = [...this.heroes];
   //   this.heroes = this.heroes.filter(h => h.id !== id);
-  //   this.sub = this.dataService
+  //   this.subscriptions.push(this.dataService
   //     .deleteHeroById(id + "x")
   //     .pipe(
   //       catchError((err: HttpErrorResponse) => {
@@ -70,37 +78,41 @@ export class HeroesComponent implements OnInit, OnDestroy {
   //         return (this.heroes = prevData);
   //       })
   //     )
-  //     .subscribe();
+  //     .subscribe());
   // }
 
   onSave() {
     this.isLoading = true;
-    this.dataService.postHero(this.itemForm.value).subscribe(
-      data => this.heroes.push(data),
-      (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        console.log(err.message);
-      },
-      () => {
-        this.isLoading = false;
-        this.itemForm.reset();
-      }
+    this.subscriptions.push(
+      this.dataService.postHero(this.itemForm.value).subscribe(
+        data => this.heroes.push(data),
+        (err: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.log(err.message);
+        },
+        () => {
+          this.isLoading = false;
+          this.itemForm.reset();
+        }
+      )
     );
   }
 
   onUpdate() {
     const hero = this.editedForm.value;
     this.isLoading = true;
-    this.dataService.putHero(hero).subscribe(
-      () => {
-        const index = this.heroes.findIndex(h => h.id === hero.id);
-        this.heroes[index] = hero;
-      },
-      (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        console.log(err.statusText);
-      },
-      () => (this.isLoading = false)
+    this.subscriptions.push(
+      this.dataService.putHero(hero).subscribe(
+        () => {
+          const index = this.heroes.findIndex(h => h.id === hero.id);
+          this.heroes[index] = hero;
+        },
+        (err: HttpErrorResponse) => {
+          this.isLoading = false;
+          console.log(err.statusText);
+        },
+        () => (this.isLoading = false)
+      )
     );
   }
 
